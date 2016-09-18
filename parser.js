@@ -1,6 +1,6 @@
-var fs = require('fs');
 var request = require('request');
 let cheerio = require('cheerio');
+var ImageDownloader = require('./imageDownloader.js');
 
 
 /**
@@ -49,22 +49,6 @@ let getPage = function (url) {
 
 };
 
-/**
- * Download image by link and save it in the output folder.
- *
- * @param uri
- * @param filename
- * @param callback
- */
-var download = function (uri, filename, callback) {
-    request.head(uri, function (err, res, body) {
-        //console.log('content-type:', res.headers['content-type']);
-        //console.log('content-length:', res.headers['content-length']);
-        request(uri).pipe(fs.createWriteStream('output/' + filename)).on('close', callback);
-    });
-    console.log('Downloading: ' + filename)
-};
-
 
 /**
  * Parse left-side images tab and call download() for each image url.
@@ -88,7 +72,7 @@ let parseOnePage = function (url, fileName, callback) {
         let length = arrOfUrls.length;
 
         for (var i = 0; i < length; i++) {
-            download(arrOfUrls[i], fileName + "-" + i + '.jpg', function () {
+            ImageDownloader.oneImageDownload(arrOfUrls[i], fileName + "-" + i + '.jpg', function () {
                 //console.log('done ' + fileName + "-" + i + '.jpg');
             });
         }

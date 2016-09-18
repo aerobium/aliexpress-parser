@@ -3,7 +3,6 @@ var app = express();
 var aliGoGo = require('./parser.js');
 
 
-
 //Converter Class
 var Converter = require("csvtojson").Converter;
 var converter = new Converter({
@@ -24,14 +23,11 @@ converter.on("end_parsed", function (jsonArray) {
 require("fs").createReadStream("./testcsv.csv").pipe(converter);
 
 
-
 //let showJson = function(json){
 //    for (var i = 0; i < json.length; i++){
 //        console.log(json[i]._FILE_NAME_ +  " ||| " + json[i]._URL_)
 //    }
 //};
-
-
 
 
 app.listen(3000, function () {
