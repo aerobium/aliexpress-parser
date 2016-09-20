@@ -4,7 +4,6 @@ var request = require('request');
 
 var ImageDownloader = {
 
-
     /**
      * Download image by link and save it in the output folder.
      */
@@ -14,8 +13,6 @@ var ImageDownloader = {
         });
         console.log('Downloading image: ' + filename)
     }
-
 };
-
 
 module.exports = ImageDownloader;

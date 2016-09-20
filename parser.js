@@ -25,14 +25,11 @@ var Ali = {
                 process.exit();
             }
 
-            setTimeout(second_passed, 3000)
-
+            setTimeout(second_passed, 5000)
 
         } else {
             getPage(Ali.current._URL_);
         }
-
-
     }
 };
 
@@ -42,8 +39,18 @@ var Ali = {
  */
 let getPage = function (url) {
     request(url, function (error, response, body) {
-            let imageDetailPageUrl = 'http://' + body.substring(body.lastIndexOf('PageURL="') + 11, body.lastIndexOf('window.runParams.imageBigViewURL') - 3);
-            parseOnePage(imageDetailPageUrl, Ali.current._FILE_NAME_, Ali.tick);
+
+            if (Ali.current._SIDE_ == '0') {
+
+                //here we get url from window.runParams.imageDetailPageURL=
+                let imageDetailPageUrl = 'http://' + body.substring(body.lastIndexOf('PageURL="') + 11, body.lastIndexOf('window.runParams.imageBigViewURL') - 3);
+
+                console.log('Single url: ' + imageDetailPageUrl);
+                parseLeftSideImageTab(imageDetailPageUrl, Ali.current._FILE_NAME_, Ali.tick);
+
+            } else {
+                parseRightHorizontalImageTab(url, Ali.current._FILE_NAME_, Ali.tick);
+            }
         }
     );
 
@@ -57,7 +64,7 @@ let getPage = function (url) {
  * @param fileName
  * @param callback
  */
-let parseOnePage = function (url, fileName, callback) {
+let parseLeftSideImageTab = function (url, fileName, callback) {
     request(url, function (error, response, body) {
 
         let $ = cheerio.load(body);
@@ -73,11 +80,58 @@ let parseOnePage = function (url, fileName, callback) {
 
         for (var i = 0; i < length; i++) {
             ImageDownloader.oneImageDownload(arrOfUrls[i], fileName + "-" + i + '.jpg', function () {
-                //console.log('done ' + fileName + "-" + i + '.jpg');
+            });
+        }
+
+        callback();
+    });
+};
+
+
+let parseRightHorizontalImageTab = function (url, fileName, callback) {
+
+    request(url, function (error, response, body) {
+
+        let $ = cheerio.load(body);
+        let arrOfImages = $('#j-sku-list-2 img');
+
+        let arrOfUrls = [];
+
+        arrOfImages.each(function () {
+            let currentImageUrl = $(this).attr('bigpic');
+            arrOfUrls.push(encodeUriForCyrillicLinks(currentImageUrl));
+
+        });
+
+        let length = arrOfUrls.length;
+
+        //ToDo раскомментировать потом
+        for (var i = 0; i < length; i++) {
+            ImageDownloader.oneImageDownload(arrOfUrls[i], fileName + "-" + i + '.jpg', function () {
             });
         }
         callback();
     });
+};
+
+
+/**
+ * Encode URI for url's with cyrillic chars
+ *
+ * @param uri
+ * @returns {string}
+ */
+let encodeUriForCyrillicLinks = function (uri) {
+
+    let leftPart = uri.substring(0, uri.lastIndexOf('/'));
+    let rightPart = uri.substr(uri.lastIndexOf('/') + 1);
+    let resultUrl = '';
+    let encodedRightPart = '';
+
+    encodedRightPart = encodeURIComponent(rightPart);
+    resultUrl = leftPart + '/' + encodedRightPart;
+
+    return resultUrl;
 };
 
 
