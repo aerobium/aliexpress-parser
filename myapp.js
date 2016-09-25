@@ -2,6 +2,8 @@ var express = require('express');
 var app = express();
 var aliGoGo = require('./parser.js');
 
+var fs = require('fs');
+
 
 //Converter Class
 var Converter = require("csvtojson").Converter;
@@ -15,10 +17,59 @@ converter.on("end_parsed", function (jsonArray) {
 
     //showJson(jsonArray);
 
-    aliGoGo.init(jsonArray);
-    aliGoGo.tick();
+    //aliGoGo.init(jsonArray);
+    //aliGoGo.tick();
 
 });
+
+
+
+
+
+
+let prefix = 'data/goods/3530/'
+let files = fs.readdirSync('./output');
+let fileNameArr = [];
+
+let lastZeroFileNAme = '';
+let zeroFileNameArr = [];
+
+let longUrl = '';
+
+
+for (let i in files) {
+
+
+    let currentFileName = files[i].substring(0, files[i].lastIndexOf('-'));
+
+    if (currentFileName != lastZeroFileNAme) {
+        console.log(prefix+longUrl);
+
+        longUrl = '';
+        lastZeroFileNAme = currentFileName;
+
+        zeroFileNameArr.push(prefix+files[i]);
+
+        //console.log(files[i])
+        var index = files.indexOf(files[i]);
+        files.splice(index, 1);
+    }
+
+    longUrl = longUrl + ',' + prefix + files[i];
+
+}
+
+let mySet = new Set(fileNameArr);
+
+console.log(zeroFileNameArr)
+
+
+for (let i of mySet) {
+
+    console.log(i.left)
+}
+
+
 
 //read from file
 require("fs").createReadStream("./testcsv-2.csv").pipe(converter);
