@@ -12,22 +12,29 @@ var converter = new Converter({
 });
 
 //end_parsed will be emitted once parsing finished
-converter.on("end_parsed", function (jsonArray) {
-    console.log(jsonArray); //here is your result jsonarray
-
-    //showJson(jsonArray);
-
-    //aliGoGo.init(jsonArray);
-    //aliGoGo.tick();
-
-});
 
 
+//ToDo comment this to make parse
+
+//converter.on("end_parsed", function (jsonArray) {
+//    console.log(jsonArray); //here is your result jsonarray
+//
+//    //showJson(jsonArray);
+//
+//    aliGoGo.init(jsonArray);
+//    aliGoGo.tick();
+//
+//});
 
 
 
 
-let prefix = 'data/goods/3530/'
+
+//--------------------------- Start of file name parser ------------------------------------------
+//let prefix = 'data/goods/5350/';  // - variant 1
+let prefix = 'catalog/goods/105/';  // - variant 2
+
+
 let files = fs.readdirSync('./output');
 let fileNameArr = [];
 
@@ -41,6 +48,8 @@ for (let i in files) {
 
 
     let currentFileName = files[i].substring(0, files[i].lastIndexOf('-'));
+
+    //console.log('A1: ' + currentFileName)
 
     if (currentFileName != lastZeroFileNAme) {
         console.log(prefix+longUrl);
@@ -68,6 +77,8 @@ for (let i of mySet) {
 
     console.log(i.left)
 }
+
+//--------------------------- End of file name parser ------------------------------------------
 
 
 
