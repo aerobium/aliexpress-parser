@@ -1,2 +1,2 @@
-# aliexpress-parser
-Simple image parser from Aliexpress
+# Aliexpress image parser
+NodeJs simple images parser from Aliexpress.
